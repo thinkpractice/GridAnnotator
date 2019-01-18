@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
 from DirectoryFilter import DirectoryFilter
 import math
 import random
@@ -25,7 +25,7 @@ def paginate(images, images_per_page):
             page_images = []
             all_images.append(images_to_return)
         border_color = "#00ff00" if bool(random.getrandbits(1)) else "#ff0000"
-        page_images.append({"id": i, "url": image, "width": 75, "height": 75, "color": border_color })
+        page_images.append({"id": i, "url": "/get_image/{}".format(i), "width": 75, "height": 75, "color": border_color })
     return all_images
 
 
@@ -62,5 +62,12 @@ def index():
 def show(page_index):
     return render_page(page_index)
 
+
+@app.route("/get_image/<int:image_id>")
+def get_image(image_id):
+    return send_file(image_files[image_id],
+                     mimetype='image/png',
+                     as_attachment=False
+                     )
 
 app.run()

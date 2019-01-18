@@ -9,7 +9,7 @@
 <body>
     <div class="grid-container">
         {% for image in images %}
-            <div class="grid-item"><img style="border: 2px solid;border-color:{{image.color}}" src="file://{{image.url}}" width="{{image.width}}" height="{{image.height}}" /> </div>
+            <div class="grid-item"><img style="border: 2px solid;border-color:{{image.color}}" src="{{image.url}}" width="{{image.width}}" height="{{image.height}}" /> </div>
         {% endfor %}
     </div>
     <div>
