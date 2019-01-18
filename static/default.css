@@ -1,0 +1,14 @@
+.grid-container
+{
+    margin: auto;
+    width: 50%;
+    display: inline-grid;
+    grid-template-columns: auto auto auto auto;
+}
+
+.grid-item {
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+}
+
