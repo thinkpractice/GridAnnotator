@@ -17,16 +17,23 @@ image_files = get_files()
 
 
 def paginate(images, images_per_page):
-    all_images = []
+    paginated_images = []
     page_images = []
     for i, image in enumerate(images):
         if (i % images_per_page == 0 and i > 0) or i == len(images):
             images_to_return = page_images
             page_images = []
-            all_images.append(images_to_return)
-        border_color = "#00ff00" if bool(random.getrandbits(1)) else "#ff0000"
-        page_images.append({"id": i, "url": "/get_image/{}".format(i), "width": 75, "height": 75, "color": border_color })
-    return all_images
+            paginated_images.append(images_to_return)
+        positive_annotation = bool(random.getrandbits(1))
+        page_images.append({"id": i, "url": "/get_image/{}".format(i),
+                            "width": 75, "height": 75,
+                            "annotation": positive_annotation,
+                            "color": color_for_annotation(positive_annotation)})
+    return paginated_images
+
+
+def color_for_annotation(positive_annotation):
+    return "#00ff00" if positive_annotation else "#ff0000"
 
 
 all_images = paginate(image_files, 16)
@@ -69,5 +76,14 @@ def get_image(image_id):
                      mimetype='image/png',
                      as_attachment=False
                      )
+
+
+@app.route("/annotate_image/<int:page_index>/<int:image_id>")
+def annotate_image(page_index, image_id):
+    image = all_images[page_index][image_id-page_index*16]
+    image["annotation"] = not image["annotation"]
+    image["color"] = color_for_annotation(image["annotation"])
+    return show(page_index)
+
 
 app.run()
