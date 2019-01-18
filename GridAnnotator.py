@@ -26,7 +26,7 @@ def paginate(images, images_per_page):
             paginated_images.append(images_to_return)
         positive_annotation = bool(random.getrandbits(1))
         page_images.append({"id": i, "url": "/get_image/{}".format(i),
-                            "width": 75, "height": 75,
+                            "width": 150, "height": 150,
                             "annotation": positive_annotation,
                             "color": color_for_annotation(positive_annotation)})
     return paginated_images
