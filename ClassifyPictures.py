@@ -1,5 +1,5 @@
 from DirectoryFilter import DirectoryFilter
-from keras.applications import VGG16, imagenet_utils
+from keras.applications import VGG16
 from keras.models import Model
 from keras.layers import GlobalAveragePooling2D, BatchNormalization, Dropout, Dense
 from keras.preprocessing.image import load_img, img_to_array
@@ -83,8 +83,6 @@ def classify_images(weights_filename, cut_off, directory):
                                   })
         if i % 100 == 0:
             print("Classified {} out of {} images".format(i, len(image_files)))
-        if i > 0 and i % 300 == 0:
-            break
     return classified_images
 
 
