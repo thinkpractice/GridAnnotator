@@ -54,10 +54,6 @@ def load_model(weights_filename):
 
 
 def prepare_image(image, target):
-    # if the image mode is not RGB, convert it
-    #if image.mode != "RGB":
-    #    image = image.convert("RGB")
-
     # resize the input image and preprocess it
     image = image.resize(target)
     image = img_to_array(image)
@@ -73,19 +69,20 @@ def classify_image(weights_filename, cut_off, image_file):
     image = load_img(image_file)
     pre_processed_image = prepare_image(image, target=(75, 75))
     predictions = cnn_model.predict(np.array(pre_processed_image))
-    return predictions[0] > cut_off
+    return pre_processed_image.shape, float(predictions[0][0]), bool(predictions[0][0] > cut_off)
 
 
 def classify_images(weights_filename, cut_off, directory):
     classified_images = []
     image_files = get_files(directory)
     for i, image_file in enumerate(image_files):
-        image_classification = classify_image(weights_filename, cut_off, image_file)
+        image_shape, prediction, image_classification = classify_image(weights_filename, cut_off, image_file)
         classified_images.append({
                                     "id": i,
-                                    "width": 150,
-                                    "height": 150,
+                                    "width": image_shape[2],
+                                    "height": image_shape[1],
                                     "annotation": image_classification,
+                                    "prediction": prediction,
                                     "filename": image_file
                                   })
         if i % 100 == 0:
