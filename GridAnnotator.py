@@ -2,6 +2,8 @@ from flask import Flask, render_template, send_file
 from DirectoryFilter import DirectoryFilter
 import math
 import random
+import os
+
 
 app = Flask(__name__)
 directoryFilter = DirectoryFilter(r"/media/tim/Data/Work/CBS/DeepSolaris/Images/Tiles/Old/Heerlen_png")

@@ -2,13 +2,20 @@ from DirectoryFilter import DirectoryFilter
 import sys
 import random
 import json
+import os
+
+
+def get_subdirectories(directory):
+    return [name for name in os.listdir(directory)
+            if os.path.isdir(os.path.join(directory, name))]
 
 
 def get_files(directory):
     directory_filter = DirectoryFilter(directory)
-    return directory_filter.dir("2013").rgb.images.paths + \
-           directory_filter.dir("2014").rgb.images.paths + \
-           directory_filter.dir("2015").rgb.images.paths
+    subdirectories = get_subdirectories(directory)
+    if len(subdirectories) == 0:
+        return directory_filter.rgb.images.paths
+    return [directory_filter.dir(subdirectory).rgb.images.paths for subdirectory in subdirectories]
 
 
 def classify_images(directory):
