@@ -12,7 +12,10 @@ app.config.from_object('config.Config')
 def get_files():
     classification_file = app.config["CLASSIFICATION_FILE"]
     with open(classification_file, "r") as json_file:
-        return json.load(json_file)
+        json_data = json.load(json_file)
+        app.config["CURRENT_PAGE_INDEX"] = json_data["current_page_index"]
+        return json_data["images"]
+
 
 
 image_files = get_files()
@@ -66,19 +69,22 @@ def render_page(page_index):
     return render_template("view.html", **images)
 
 
-def save_annotations(filename, annotations):
+def save_annotations(filename, annotations, current_page_index):
     with open(filename, "w") as json_file:
-        json.dump(annotations, json_file)
+        data = {"current_page_index": current_page_index,
+                "images": annotations
+                }
+        json.dump(data, json_file)
 
 
 @app.route("/")
 def index():
-    return render_page(0)
+    return render_page(app.config["CURRENT_PAGE_INDEX"])
 
 
 @app.route("/show/<int:page_index>")
 def show(page_index):
-    save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images))
+    save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images), page_index)
     return render_page(page_index)
 
 

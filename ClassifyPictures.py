@@ -86,8 +86,10 @@ def classify_images(weights_filename, cut_off, directory):
     return classified_images
 
 
-def write_json(filename, data):
+def write_json(filename, images):
     with open(filename, "w") as json_file:
+        data = {"current_page_index": 0,
+                "images": images}
         json.dump(data, json_file)
 
 
