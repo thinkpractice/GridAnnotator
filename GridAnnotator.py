@@ -25,8 +25,8 @@ def paginate(images, images_per_page):
             page_images = []
             paginated_images.append(images_to_return)
         image["url"] = "/get_image/{}".format(i)
-        image["width"] = image["width"] * app.config["IMAGE_ZOOM_FACTOR"]
-        image["height"] = image["height"] * app.config["IMAGE_ZOOM_FACTOR"]
+        image["display_width"] = image["width"] * app.config["IMAGE_ZOOM_FACTOR"]
+        image["display_height"] = image["height"] * app.config["IMAGE_ZOOM_FACTOR"]
         image["color"] = color_for_annotation(image["annotation"])
         page_images.append(image)
     return paginated_images
