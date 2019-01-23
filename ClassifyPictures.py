@@ -22,9 +22,9 @@ def vgg16_model():
         print("{} is trainable".format(layer.name))
     last_conv_layer = base_model.get_layer("block5_conv3")
     x = GlobalAveragePooling2D()(last_conv_layer.output)
+    x = Dense(512, activation="relu")(x)
     x = BatchNormalization(axis=-1)(x)
     x = Dropout(0.5)(x)
-    x = Dense(512, activation="relu")(x)
     predictions = Dense(1, activation="sigmoid")(x)
     return Model(base_model.input, predictions)
 
@@ -49,7 +49,7 @@ def load_model(weights_filename):
     global model
     if not model:
         model = vgg16_model()
-        model.load_weights('./vgg16_3t_wmp_wr_aachen__01_0.88.hdf5')
+        model.load_weights(weights_filename)
     return model
 
 
@@ -88,6 +88,8 @@ def classify_images(weights_filename, cut_off, directory):
                                     "annotation": image_classification,
                                     "filename": image_file
                                   })
+        if i % 100 == 0:
+            print("Classified {} out of {} images".format(i, len(image_files)))
     return classified_images
 
 
@@ -101,9 +103,11 @@ def main(argv):
         print("usage: ClassifyPictures.py <weights> <cut_off> <directory> <outfile>")
         exit(0)
     weights_file = argv[1]
-    cut_off = argv[2]
+    cut_off = float(argv[2])
     directory = argv[3]
     outfile = argv[4]
+
+    print("Classifying {} with model {} and cut_off {}, outfile: {}".format(directory, weights_file, cut_off, outfile))
     images = classify_images(weights_file, cut_off, directory)
     write_json(outfile, images)
 
