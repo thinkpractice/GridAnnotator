@@ -68,19 +68,19 @@ def prepare_image(image, target):
     return image
 
 
-def classify_image(weights_filename, image_file):
+def classify_image(weights_filename, cut_off, image_file):
     cnn_model = load_model(weights_filename)
     image = load_img(image_file)
     pre_processed_image = prepare_image(image, target=(75, 75))
     predictions = cnn_model.predict(np.array(pre_processed_image))
-    return predictions[0]
+    return predictions[0] > cut_off
 
 
-def classify_images(weights_filename, directory):
+def classify_images(weights_filename, cut_off, directory):
     classified_images = []
     image_files = get_files(directory)
     for i, image_file in enumerate(image_files):
-        image_classification = classify_image(weights_filename, image_file)
+        image_classification = classify_image(weights_filename, cut_off, image_file)
         classified_images.append({
                                     "id": i,
                                     "width": 150,
@@ -97,13 +97,14 @@ def write_json(filename, data):
 
 
 def main(argv):
-    if len(argv) <= 3:
-        print("usage: ClassifyPictures.py <weights> <directory> <outfile>")
+    if len(argv) <= 4:
+        print("usage: ClassifyPictures.py <weights> <cut_off> <directory> <outfile>")
         exit(0)
-    weights = argv[1]
-    directory = argv[2]
-    outfile = argv[3]
-    images = classify_images(weights, directory)
+    weights_file = argv[1]
+    cut_off = argv[2]
+    directory = argv[3]
+    outfile = argv[4]
+    images = classify_images(weights_file, cut_off, directory)
     write_json(outfile, images)
 
 
