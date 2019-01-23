@@ -1,4 +1,6 @@
 from flask import Flask, render_template, send_file
+from PIL import Image
+import io
 import math
 import json
 
@@ -81,10 +83,16 @@ def show(page_index):
 
 @app.route("/get_image/<int:image_id>")
 def get_image(image_id):
-    return send_file(image_files[image_id]["filename"],
-                     mimetype='image/png',
-                     as_attachment=False
-                     )
+    filename = image_files[image_id]["filename"]
+    #with io.BytesIO() as image_buffer:
+    image_buffer = io.BytesIO()
+    image = Image.open(filename)
+    image.save(image_buffer, format="PNG")
+    image_buffer.seek(0)
+    return send_file(image_buffer,
+                         mimetype='image/png',
+                         as_attachment=False
+                         )
 
 
 @app.route("/annotate_image/<int:page_index>/<int:image_id>")
