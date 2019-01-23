@@ -78,6 +78,7 @@ def index():
 
 @app.route("/show/<int:page_index>")
 def show(page_index):
+    save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images))
     return render_page(page_index)
 
 
@@ -99,7 +100,6 @@ def annotate_image(page_index, image_id):
     image = all_images[page_index][image_id-page_index*16]
     image["annotation"] = not image["annotation"]
     image["color"] = color_for_annotation(image["annotation"])
-    save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images))
     return show(page_index)
 
 
