@@ -59,8 +59,6 @@ def prepare_image(image, target):
     image = img_to_array(image)
     image = np.expand_dims(image, axis=0)
     image = imagenet_utils.preprocess_input(image)
-
-    # return the processed image
     return image
 
 

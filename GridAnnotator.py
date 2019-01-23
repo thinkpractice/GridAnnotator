@@ -32,6 +32,10 @@ def paginate(images, images_per_page):
     return paginated_images
 
 
+def unpaginate(paginated_images):
+    return [image for page in paginated_images for image in page]
+
+
 def color_for_annotation(positive_annotation):
     return "#00ff00" if positive_annotation else "#ff0000"
 
@@ -88,7 +92,7 @@ def annotate_image(page_index, image_id):
     image = all_images[page_index][image_id-page_index*16]
     image["annotation"] = not image["annotation"]
     image["color"] = color_for_annotation(image["annotation"])
-    save_annotations(app.config["CLASSIFICATION_FILE"], all_images)
+    save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images))
     return show(page_index)
 
 
