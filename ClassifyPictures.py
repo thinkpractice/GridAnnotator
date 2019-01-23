@@ -54,12 +54,10 @@ def load_model(weights_filename):
 
 
 def prepare_image(image, target):
-    # resize the input image and preprocess it
     image = image.resize(target)
     image = img_to_array(image)
-    image = np.expand_dims(image, axis=0)
-    image = imagenet_utils.preprocess_input(image)
-    return image
+    image = image / 255
+    return np.expand_dims(image, axis=0)
 
 
 def classify_image(weights_filename, cut_off, image_file):
