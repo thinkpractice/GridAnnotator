@@ -84,15 +84,14 @@ def show(page_index):
 @app.route("/get_image/<int:image_id>")
 def get_image(image_id):
     filename = image_files[image_id]["filename"]
-    #with io.BytesIO() as image_buffer:
     image_buffer = io.BytesIO()
     image = Image.open(filename)
     image.save(image_buffer, format="PNG")
     image_buffer.seek(0)
     return send_file(image_buffer,
-                         mimetype='image/png',
-                         as_attachment=False
-                         )
+                     mimetype='image/png',
+                     as_attachment=False
+                     )
 
 
 @app.route("/annotate_image/<int:page_index>/<int:image_id>")
