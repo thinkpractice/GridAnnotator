@@ -87,6 +87,8 @@ def classify_images(weights_filename, cut_off, directory):
                                   })
         if i % 100 == 0:
             print("Classified {} out of {} images".format(i, len(image_files)))
+        if i > 0 and i % 300 == 0:
+            break
     return classified_images
 
 

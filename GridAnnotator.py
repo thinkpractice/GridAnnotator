@@ -1,13 +1,10 @@
 from flask import Flask, render_template, send_file
-from DirectoryFilter import DirectoryFilter
 import math
 import json
 
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
-
-directoryFilter = DirectoryFilter(r"/media/tim/Data/Work/CBS/DeepSolaris/Images/Tiles/Old/Heerlen_png")
 
 
 def get_files():
@@ -70,7 +67,6 @@ def save_annotations(filename, annotations):
 
 @app.route("/")
 def index():
-    print(app.config["CLASSIFICATION_DIR"])
     return render_page(0)
 
 
@@ -81,7 +77,7 @@ def show(page_index):
 
 @app.route("/get_image/<int:image_id>")
 def get_image(image_id):
-    return send_file(image_files[image_id],
+    return send_file(image_files[image_id]["filename"],
                      mimetype='image/png',
                      as_attachment=False
                      )
