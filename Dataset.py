@@ -1,6 +1,7 @@
 import json
 import math
 
+
 class Dataset(object):
     def __init__(self, filename, images_per_page, current_page_index=0):
         self.__filename = filename
@@ -60,14 +61,13 @@ class Dataset(object):
                     }
             json.dump(data, json_file)
 
-    def get_images_for_page(self, page_index):
-        return self.paginated_images[page_index]
-
     def annotate_image(self, image_id):
-        page_first_image_index = self.current_page_index * self.images_per_page
-        image = self.paginated_images[self.current_page_index][image_id-page_first_image_index]
+        image = self.images[image_id]
         image["annotation"] = not image["annotation"]
         return image
+
+    def get_images_for_page(self, page_index):
+        return self.paginated_images[page_index]
 
     def paginate(self, images, images_per_page):
         paginated_images = []
@@ -79,9 +79,6 @@ class Dataset(object):
                 paginated_images.append(images_to_return)
             page_images.append(image)
         return paginated_images
-
-    def unpaginate(self, paginated_images):
-        return [image for page in paginated_images for image in page]
 
     def get_images(self, annotation_filename):
         with open(annotation_filename, "r") as json_file:
