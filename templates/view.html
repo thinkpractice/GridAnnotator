@@ -8,6 +8,12 @@
     <title>Image Grid Annotator</title>
 </head>
 <body>
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">GridAnnotator</span>
+        <span class="navbar-text">
+            Page {{paging_start_index}} / {{number_of_pages}}
+        </span>
+    </nav>
     <div class="grid-container">
         {% for image in images %}
             <div class="grid-item">

@@ -111,4 +111,5 @@ def annotate_image(page_index, image_id):
 
 
 app.run()
+print(app.static_folder)
 save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images), app.config["CURRENT_PAGE_INDEX"])
