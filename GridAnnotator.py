@@ -45,11 +45,11 @@ def color_for_annotation(positive_annotation):
     return "#00ff00" if positive_annotation else "#ff0000"
 
 
-all_images = paginate(image_files, 16)
+all_images = paginate(image_files, app.config["IMAGES_PER_PAGE"])
 
 
 def render_page(page_index):
-    images_per_page = 16
+    images_per_page = app.config["IMAGES_PER_PAGE"]
     number_of_pages = math.ceil(len(image_files) / images_per_page)
     if page_index > number_of_pages:
         page_index = 0
