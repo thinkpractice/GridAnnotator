@@ -1,79 +1,46 @@
 from flask import Flask, render_template, send_file, jsonify
+from Dataset import Dataset
 from PIL import Image
 import io
-import math
-import json
 
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
 
-
-def get_files(annotation_filename):
-    with open(annotation_filename, "r") as json_file:
-        json_data = json.load(json_file)
-        current_page_index = json_data["current_page_index"]
-        return current_page_index, json_data["images"]
-
-
-app.config["CURRENT_PAGE_INDEX"], image_files = get_files(app.config["CLASSIFICATION_FILE"])
-
-
-def paginate(images, images_per_page):
-    paginated_images = []
-    page_images = []
-    for i, image in enumerate(images):
-        if (i % images_per_page == 0 and i > 0) or i == len(images):
-            images_to_return = page_images
-            page_images = []
-            paginated_images.append(images_to_return)
-        image["url"] = "/get_image/{selected_dataset}/{id}".format(selected_dataset=1, id=i)
-        image["display_width"] = image["width"] * app.config["IMAGE_ZOOM_FACTOR"]
-        image["display_height"] = image["height"] * app.config["IMAGE_ZOOM_FACTOR"]
-        image["color"] = color_for_annotation(image["annotation"])
-        page_images.append(image)
-    return paginated_images
-
-
-def unpaginate(paginated_images):
-    return [image for page in paginated_images for image in page]
+dataset = Dataset(app.config["CLASSIFICATION_FILE"], app.config["IMAGES_PER_PAGE"])
+dataset.open()
+app.config["CURRENT_PAGE_INDEX"] = dataset.current_page_index
 
 
 def color_for_annotation(positive_annotation):
     return "#00ff00" if positive_annotation else "#ff0000"
 
 
-all_images = paginate(image_files, app.config["IMAGES_PER_PAGE"])
-
-
 def render_page(page_index):
-    images_per_page = app.config["IMAGES_PER_PAGE"]
-    number_of_pages = math.ceil(len(image_files) / images_per_page)
-    if page_index > number_of_pages:
+    if page_index > dataset.number_of_pages:
         page_index = 0
 
     previous_page_number = page_index - 1 if page_index - 1 > 0 else 0
-    next_page_number = page_index + 1 if page_index + 1 <= number_of_pages else 0
+    next_page_number = page_index + 1 if page_index + 1 <= dataset.number_of_pages else 0
+
+    images_for_page = dataset.get_images_for_page(page_index)
+    for image in images_for_page:
+        image["color"] = color_for_annotation(image["annotation"])
+        image["url"] = "/get_image/{selected_dataset}/{id}".format(selected_dataset=1, id=image["id"])
+        image["display_width"] = image["width"] * app.config["IMAGE_ZOOM_FACTOR"]
+        image["display_height"] = image["height"] * app.config["IMAGE_ZOOM_FACTOR"]
 
     images = {
         "success": True,
-        "images": all_images[page_index],
+        "images": images_for_page,
         "paging_start_index": page_index,
         "paging_end_index": page_index + 10,
         "previous_page_number": previous_page_number,
         "next_page_number": next_page_number,
-        "number_of_pages": number_of_pages,
+        "number_of_pages": dataset.number_of_pages,
         "selected_dataset": 1
     }
     return render_template("view.html", **images)
-
-
-def save_annotations(filename, annotations, current_page_index):
-    with open(filename, "w") as json_file:
-        data = {"current_page_index": current_page_index,
-                "images": annotations
-                }
-        json.dump(data, json_file)
 
 
 @app.route("/")
@@ -84,13 +51,13 @@ def index():
 @app.route("/show/<int:data_set>/<int:page_index>")
 def show(data_set, page_index):
     app.config["CURRENT_PAGE_INDEX"] = page_index
-    save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images), page_index)
+    dataset.save()
     return render_page(page_index)
 
 
 @app.route("/get_image/<int:data_set>/<int:image_id>")
 def get_image(data_set, image_id):
-    filename = image_files[image_id]["filename"]
+    filename = dataset[image_id]["filename"]
     image_buffer = io.BytesIO()
     image = Image.open(filename)
     image.save(image_buffer, format="PNG")
@@ -103,8 +70,7 @@ def get_image(data_set, image_id):
 
 @app.route("/annotate_image/<int:data_set>/<int:page_index>/<int:image_id>")
 def annotate_image(data_set, page_index, image_id):
-    image = all_images[page_index][image_id-page_index*16]
-    image["annotation"] = not image["annotation"]
+    image = dataset.annotate_image(image_id)
     image["color"] = color_for_annotation(image["annotation"])
     return show(data_set, page_index)
 
@@ -120,12 +86,8 @@ def get_datasets():
 
 @app.route("/get_class_counts/<int:data_set>")
 def get_class_counts(data_set):
-    return jsonify([
-        {"label": "Positives", "count": 10},
-        {"label": "Negatives", "count": 20}
-        ]
-    )
+    return jsonify(dataset.class_counts)
 
 
 app.run()
-save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images), app.config["CURRENT_PAGE_INDEX"])
+dataset.save()
