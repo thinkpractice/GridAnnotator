@@ -65,6 +65,7 @@
             </div>
         </main>
     </div>
+    </div>
 
     <script
             src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -92,13 +93,13 @@
 
         dropdown.empty();
 
-        dropdown.append('<option selected="true" disabled>Choose Dataset</option>');
-        dropdown.prop('selectedIndex', 0);
+        /*dropdown.append('<option selected="true" disabled>Choose Dataset</option>');*/
 
         $.getJSON("/get_datasets", function (data) {
             $.each(data, function (key, entry) {
-                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.name));
+                dropdown.append($('<option></option>').attr('value', entry.id).attr('selected', entry.selected).text(entry.name));
             })
+            dropdown.prop('selectedIndex', 0);
         });
 
         $.getJSON("/get_class_counts/{{selected_dataset}}", function (data) {

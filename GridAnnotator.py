@@ -75,7 +75,7 @@ def annotate_image(data_set, page_index, image_id):
 
 @app.route("/get_datasets")
 def get_datasets():
-    return jsonify([{"id": data_set_index, "name": data_set.name}
+    return jsonify([{"id": data_set_index, "name": data_set.name, "selected": data_set_index == 0}
                     for data_set_index, data_set in enumerate(data_set_factory.data_sets)])
 
 
