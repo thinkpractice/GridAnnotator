@@ -9,7 +9,6 @@ app.config.from_object('config.Config')
 
 dataset = Dataset(app.config["CLASSIFICATION_FILE"], app.config["IMAGES_PER_PAGE"])
 dataset.open()
-app.config["CURRENT_PAGE_INDEX"] = dataset.current_page_index
 
 
 def color_for_annotation(positive_annotation):
@@ -45,12 +44,11 @@ def render_page(page_index):
 
 @app.route("/")
 def index():
-    return render_page(app.config["CURRENT_PAGE_INDEX"])
+    return render_page(dataset.current_page_index)
 
 
 @app.route("/show/<int:data_set>/<int:page_index>")
 def show(data_set, page_index):
-    app.config["CURRENT_PAGE_INDEX"] = page_index
     dataset.save()
     return render_page(page_index)
 

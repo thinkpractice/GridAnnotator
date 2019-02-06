@@ -1,5 +1,6 @@
 import json
 import math
+import os
 
 
 class Dataset(object):
@@ -9,6 +10,10 @@ class Dataset(object):
         self.__current_page_index = current_page_index
         self.__images = []
         self.__paginated_images = []
+
+    @property
+    def name(self):
+        return os.path.basename(self.filename)
 
     @property
     def filename(self):
