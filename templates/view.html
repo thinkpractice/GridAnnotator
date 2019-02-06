@@ -19,6 +19,9 @@
       <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
           <div class="sidebar-sticky">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                <span>Datasets</span>
+            </h6>
             <ul class="nav flex-column">
               <li class="nav-item">
                   <form class="form-inline">
@@ -30,19 +33,7 @@
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                 <span>Annotations</span>
             </h6>
-            <ul class="nav flex-column mb-2">
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  Positives <span class="badge badge-success">4</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  Negatives <span class="badge badge-danger">4</span>
-                </a>
-              </li>
+            <ul class="nav flex-column mb-2" id="annotationsOverview">
             </ul>
           </div>
         </nav>
@@ -109,6 +100,21 @@
                 dropdown.append($('<option></option>').attr('value', entry.abbreviation).text(entry.name));
             })
         });
+
+        $.getJSON("/get_class_counts", function (data) {
+            $.each(data, function (key, data) {
+                let annotationsList = $('#annotationsOverview');
+
+                var annotationItem = `<li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <span data-feather="file-text"></span>
+                        ${data.label} <span class="badge badge-success">${data.count}</span>
+                    </a>
+                    </li>`;
+                annotationsList.append(annotationItem);
+            });
+        });
+
     </script>
 </body>
 </html>

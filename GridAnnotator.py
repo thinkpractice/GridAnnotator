@@ -109,6 +109,7 @@ def annotate_image(page_index, image_id):
     image["color"] = color_for_annotation(image["annotation"])
     return show(page_index)
 
+
 @app.route("/get_datasets")
 def get_datasets():
     return jsonify([
@@ -117,6 +118,15 @@ def get_datasets():
         {"id": 2,
          "name": "annotations_2016.json"}])
 
+
+@app.route("/get_class_counts")
+def get_class_counts():
+    return jsonify([
+        {"label": "Positives", "count": 10},
+        {"label": "Negatives", "count": 20}
+        ]
+    )
+
+
 app.run()
-print(app.static_folder)
 save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images), app.config["CURRENT_PAGE_INDEX"])
