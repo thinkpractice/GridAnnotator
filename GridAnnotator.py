@@ -29,7 +29,7 @@ def paginate(images, images_per_page):
             images_to_return = page_images
             page_images = []
             paginated_images.append(images_to_return)
-        image["url"] = "/get_image/{}".format(i)
+        image["url"] = "/get_image/{selected_dataset}/{id}".format(selected_dataset=1, id=i)
         image["display_width"] = image["width"] * app.config["IMAGE_ZOOM_FACTOR"]
         image["display_height"] = image["height"] * app.config["IMAGE_ZOOM_FACTOR"]
         image["color"] = color_for_annotation(image["annotation"])
@@ -64,7 +64,8 @@ def render_page(page_index):
         "paging_end_index": page_index + 10,
         "previous_page_number": previous_page_number,
         "next_page_number": next_page_number,
-        "number_of_pages": number_of_pages
+        "number_of_pages": number_of_pages,
+        "selected_dataset": 1
     }
     return render_template("view.html", **images)
 
@@ -82,15 +83,15 @@ def index():
     return render_page(app.config["CURRENT_PAGE_INDEX"])
 
 
-@app.route("/show/<int:page_index>")
-def show(page_index):
+@app.route("/show/<int:data_set>/<int:page_index>")
+def show(data_set, page_index):
     app.config["CURRENT_PAGE_INDEX"] = page_index
     save_annotations(app.config["CLASSIFICATION_FILE"], unpaginate(all_images), page_index)
     return render_page(page_index)
 
 
-@app.route("/get_image/<int:image_id>")
-def get_image(image_id):
+@app.route("/get_image/<int:data_set>/<int:image_id>")
+def get_image(data_set, image_id):
     filename = image_files[image_id]["filename"]
     image_buffer = io.BytesIO()
     image = Image.open(filename)
@@ -102,12 +103,12 @@ def get_image(image_id):
                      )
 
 
-@app.route("/annotate_image/<int:page_index>/<int:image_id>")
-def annotate_image(page_index, image_id):
+@app.route("/annotate_image/<int:data_set>/<int:page_index>/<int:image_id>")
+def annotate_image(data_set, page_index, image_id):
     image = all_images[page_index][image_id-page_index*16]
     image["annotation"] = not image["annotation"]
     image["color"] = color_for_annotation(image["annotation"])
-    return show(page_index)
+    return show(data_set, page_index)
 
 
 @app.route("/get_datasets")
@@ -119,8 +120,8 @@ def get_datasets():
          "name": "annotations_2016.json"}])
 
 
-@app.route("/get_class_counts")
-def get_class_counts():
+@app.route("/get_class_counts/<int:data_set>")
+def get_class_counts(data_set):
     return jsonify([
         {"label": "Positives", "count": 10},
         {"label": "Negatives", "count": 20}

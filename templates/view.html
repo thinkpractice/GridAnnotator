@@ -42,7 +42,7 @@
             <div class="grid-container">
                 {% for image in images %}
                     <div class="grid-item">
-                        <a href="/annotate_image/{{paging_start_index}}/{{image.id}}">
+                        <a href="/annotate_image/{{selected_dataset}}/{{paging_start_index}}/{{image.id}}">
                             <img style="border: 2px solid;border-color:{{image.color}}"
                                  src="{{image.url}}"
                                  width="{{image.display_width}}" height="{{image.display_height}}"/>
@@ -53,13 +53,13 @@
             <div>
                 <ul class="pagination">
                 {% if paging_start_index > 0: %}
-                    <li class="page-item"><a class="page-link" href="/show/{{previous_page_number}}">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="/show/{{selected_dataset}}/{{previous_page_number}}">Previous</a></li>
                 {% endif %}
                 {% for page_number in range(paging_start_index, paging_end_index) %}
-                    <li class="page-item"><a class="page-link" href="/show/{{page_number}}">{{page_number}}</a></li>
+                    <li class="page-item"><a class="page-link" href="/show/{{selected_dataset}}/{{page_number}}">{{page_number}}</a></li>
                 {% endfor %}
                 {% if paging_end_index < number_of_pages: %}
-                    <li class="page-item"><a class="page-link" href="/show/{{next_page_number}}">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="/show/{{selected_dataset}}/{{next_page_number}}">Next</a></li>
                 {% endif %}
                 </ul>
             </div>
@@ -101,7 +101,7 @@
             })
         });
 
-        $.getJSON("/get_class_counts", function (data) {
+        $.getJSON("/get_class_counts/{{selected_dataset}}", function (data) {
             $.each(data, function (key, data) {
                 let annotationsList = $('#annotationsOverview');
 
