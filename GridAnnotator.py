@@ -85,4 +85,4 @@ def get_class_counts(data_set):
 
 
 app.run()
-data_set_factory.saveAll()
+data_set_factory.save_all()

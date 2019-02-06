@@ -32,7 +32,7 @@ class DatasetFactory(object):
                 for filename in os.listdir(self.annotations_dir)
                 if filename.endswith("json")]
 
-    def saveAll(self):
+    def save_all(self):
         for data_set in self.data_sets:
             if not data_set.is_open or not data_set.is_changed:
                 continue
