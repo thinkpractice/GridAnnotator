@@ -44,7 +44,7 @@ def render_page(data_set, page_index):
 
 @app.route("/")
 def index():
-    return render_page(data_set_factory[0], data_set_factory[0].current_page_index)
+    return render_page(0, data_set_factory[0].current_page_index)
 
 
 @app.route("/show/<int:data_set>/<int:page_index>")
