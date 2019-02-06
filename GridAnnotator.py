@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, jsonify
 from PIL import Image
 import io
 import math
@@ -109,6 +109,13 @@ def annotate_image(page_index, image_id):
     image["color"] = color_for_annotation(image["annotation"])
     return show(page_index)
 
+@app.route("/get_datasets")
+def get_datasets():
+    return jsonify([
+        {"id": 1,
+         "name": "annotations_2015.json"},
+        {"id": 2,
+         "name": "annotations_2016.json"}])
 
 app.run()
 print(app.static_folder)

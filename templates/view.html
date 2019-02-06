@@ -8,46 +8,85 @@
     <title>Image Grid Annotator</title>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
-        <span class="navbar-brand mb-0 h1">GridAnnotator</span>
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">Image Grid Annotator</span>
         <span class="navbar-text">
             Page {{paging_start_index}} / {{number_of_pages}}
         </span>
     </nav>
-    <div class="grid-container">
-        {% for image in images %}
-            <div class="grid-item">
-                <a href="/annotate_image/{{paging_start_index}}/{{image.id}}">
-                    <img style="border: 2px solid;border-color:{{image.color}}"
-                         src="{{image.url}}"
-                         width="{{image.display_width}}" height="{{image.display_height}}"/>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                  <form class="form-inline">
+                      <select class="custom-select mr-sm-2" id="datasetSelect">
+                      </select>
+                  </form>
+              </li>
+            </ul>
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                <span>Annotations</span>
+            </h6>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file-text"></span>
+                  Positives <span class="badge badge-success">4</span>
                 </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file-text"></span>
+                  Negatives <span class="badge badge-danger">4</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+
+            <div class="grid-container">
+                {% for image in images %}
+                    <div class="grid-item">
+                        <a href="/annotate_image/{{paging_start_index}}/{{image.id}}">
+                            <img style="border: 2px solid;border-color:{{image.color}}"
+                                 src="{{image.url}}"
+                                 width="{{image.display_width}}" height="{{image.display_height}}"/>
+                        </a>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+            <div>
+                <ul class="pagination">
+                {% if paging_start_index > 0: %}
+                    <li class="page-item"><a class="page-link" href="/show/{{previous_page_number}}">Previous</a></li>
+                {% endif %}
+                {% for page_number in range(paging_start_index, paging_end_index) %}
+                    <li class="page-item"><a class="page-link" href="/show/{{page_number}}">{{page_number}}</a></li>
+                {% endfor %}
+                {% if paging_end_index < number_of_pages: %}
+                    <li class="page-item"><a class="page-link" href="/show/{{next_page_number}}">Next</a></li>
+                {% endif %}
+                </ul>
+            </div>
+        </main>
     </div>
-    <div>
-        <ul class="pagination">
-        {% if paging_start_index > 0: %}
-            <li class="page-item"><a class="page-link" href="/show/{{previous_page_number}}">Previous</a></li>
-        {% endif %}
-        {% for page_number in range(paging_start_index, paging_end_index) %}
-            <li class="page-item"><a class="page-link" href="/show/{{page_number}}">{{page_number}}</a></li>
-        {% endfor %}
-        {% if paging_end_index < number_of_pages: %}
-            <li class="page-item"><a class="page-link" href="/show/{{next_page_number}}">Next</a></li>
-        {% endif %}
-        </ul>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
+
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous">
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
-    <script type="javascript">
+    <script type="text/javascript">
         function clickImage()
         {
             alert("Hello");
@@ -56,6 +95,20 @@
         {
             alert("Image ${image_index} clicked at page: ${page_index}");
         }
+
+
+        let dropdown = $('#datasetSelect');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Choose Dataset</option>');
+        dropdown.prop('selectedIndex', 0);
+
+        $.getJSON("/get_datasets", function (data) {
+            $.each(data, function (key, entry) {
+                dropdown.append($('<option></option>').attr('value', entry.abbreviation).text(entry.name));
+            })
+        });
     </script>
 </body>
 </html>
