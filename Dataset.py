@@ -5,6 +5,7 @@ import os
 
 class Dataset(object):
     def __init__(self, filename, images_per_page, current_page_index=0):
+        self.__is_open = False
         self.__filename = filename
         self.__images_per_page = images_per_page
         self.__current_page_index = current_page_index
@@ -18,6 +19,10 @@ class Dataset(object):
     @property
     def filename(self):
         return self.__filename
+
+    @property
+    def is_open(self):
+        return self.__is_open
 
     @property
     def images_per_page(self):
@@ -58,6 +63,7 @@ class Dataset(object):
     def open(self):
         if not self.__images:
             self.__current_page_index, self.__images = self.get_images(self.filename)
+            self.__is_open = True
 
     def save(self):
         with open(self.filename, "w") as json_file:
