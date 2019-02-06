@@ -9,16 +9,14 @@ app = Flask(__name__)
 app.config.from_object('config.Config')
 
 
-def get_files():
-    classification_file = app.config["CLASSIFICATION_FILE"]
-    with open(classification_file, "r") as json_file:
+def get_files(annotation_filename):
+    with open(annotation_filename, "r") as json_file:
         json_data = json.load(json_file)
-        app.config["CURRENT_PAGE_INDEX"] = json_data["current_page_index"]
-        return json_data["images"]
+        current_page_index = json_data["current_page_index"]
+        return current_page_index, json_data["images"]
 
 
-
-image_files = get_files()
+app.config["CURRENT_PAGE_INDEX"], image_files = get_files(app.config["CLASSIFICATION_FILE"])
 
 
 def paginate(images, images_per_page):
