@@ -23,16 +23,18 @@ class DatasetFactory(object):
         return self.__data_sets
 
     def __getitem__(self, data_set_index):
-        return self.data_sets[data_set_index]
+        data_set = self.data_sets[data_set_index]
+        data_set.open()
+        return data_set
 
     def get_data_sets(self):
-        return [Dataset(filename, self.images_per_page)
+        return [Dataset(os.path.join(self.annotations_dir, filename), self.images_per_page)
                 for filename in os.listdir(self.annotations_dir)
                 if filename.endswith("json")]
 
     def saveAll(self):
         for data_set in self.data_sets:
-            if not data_set.is_open:
+            if not data_set.is_open or not data_set.is_changed:
                 continue
             data_set.save()
 

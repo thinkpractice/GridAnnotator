@@ -6,6 +6,7 @@ import os
 class Dataset(object):
     def __init__(self, filename, images_per_page, current_page_index=0):
         self.__is_open = False
+        self.__is_changed = False
         self.__filename = filename
         self.__images_per_page = images_per_page
         self.__current_page_index = current_page_index
@@ -23,6 +24,10 @@ class Dataset(object):
     @property
     def is_open(self):
         return self.__is_open
+
+    @property
+    def is_changed(self):
+        return self.__is_changed
 
     @property
     def images_per_page(self):
@@ -71,8 +76,10 @@ class Dataset(object):
                     "images": self.images
                     }
             json.dump(data, json_file)
+            self.__is_changed = False
 
     def annotate_image(self, image_id):
+        self.__is_changed = True
         image = self.images[image_id]
         image["annotation"] = not image["annotation"]
         return image
