@@ -88,7 +88,37 @@
             alert("Image ${image_index} clicked at page: ${page_index}");
         }
 
+        function updateClassCounts(data_set)
+        {
+            $.getJSON(`/get_class_counts/${data_set}`, function (data) {
+                $.each(data, function (key, data) {
+                    let annotationsList = $('#annotationsOverview');
+
+                    var annotationItem = `<li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            ${data.label} <span class="badge badge-success">${data.count}</span>
+                        </a>
+                        </li>`;
+                    annotationsList.append(annotationItem);
+                });
+            });
+        }
+
+        function get_data_sets(data_set, current_page_index)
+        {
+            let dropdown = $('#datasetSelect');
+            dropdown.empty();
+            $.getJSON(`/get_data_sets/${data_set}`, function (data) {
+                $.each(data, function (key, entry) {
+                    dropdown.append($('<option></option>').attr('value', `/show/${entry.id}/${current_page_index}`).attr('selected', entry.selected).text(entry.name));
+                })
+            });
+        }
+
         $(document).ready(function (e) {
+            get_data_sets({{selected_dataset}}, {{paging_start_index}});
+
             $('#datasetSelect').on('change', function () {
                 var url = $(this).val();
                 if (url)
@@ -97,29 +127,7 @@
                 }
                 return false;
             });
-        });
-
-        let dropdown = $('#datasetSelect');
-        dropdown.empty();
-
-        $.getJSON("/get_data_sets/{{selected_dataset}}", function (data) {
-            $.each(data, function (key, entry) {
-                dropdown.append($('<option></option>').attr('value', `/show/${entry.id}/0`).attr('selected', entry.selected).text(entry.name));
-            })
-        });
-
-        $.getJSON("/get_class_counts/{{selected_dataset}}", function (data) {
-            $.each(data, function (key, data) {
-                let annotationsList = $('#annotationsOverview');
-
-                var annotationItem = `<li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <span data-feather="file-text"></span>
-                        ${data.label} <span class="badge badge-success">${data.count}</span>
-                    </a>
-                    </li>`;
-                annotationsList.append(annotationItem);
-            });
+            updateClassCounts({{selected_dataset}});
         });
 
     </script>
