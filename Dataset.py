@@ -87,7 +87,7 @@ class Dataset(object):
     def get_images_for_page(self, page_index):
         if page_index < 0:
             page_index = 0
-        if page_index >= self.number_of_pages:
+        if page_index >= self.number_of_pages - 1:
             page_index = self.number_of_pages - 1
         return self.paginated_images[page_index]
 
@@ -95,7 +95,7 @@ class Dataset(object):
         paginated_images = []
         page_images = []
         for i, image in enumerate(images):
-            if (i % images_per_page == 0 and i > 0) or i == len(images):
+            if (i % images_per_page == 0 and i > 0) or i == len(images) - 1:
                 images_to_return = page_images
                 page_images = []
                 paginated_images.append(images_to_return)

@@ -25,7 +25,7 @@ def render_page(data_set, page_index):
     images_for_page = dataset.get_images_for_page(page_index)
     for image in images_for_page:
         image["color"] = color_for_annotation(image["annotation"])
-        image["url"] = "/get_image/{selected_dataset}/{id}".format(selected_dataset=1, id=image["id"])
+        image["url"] = "/get_image/{selected_dataset}/{id}".format(selected_dataset=data_set, id=image["id"])
         image["display_width"] = image["width"] * app.config["IMAGE_ZOOM_FACTOR"]
         image["display_height"] = image["height"] * app.config["IMAGE_ZOOM_FACTOR"]
 
@@ -50,7 +50,7 @@ def index():
 @app.route("/show/<int:data_set>/<int:page_index>")
 def show(data_set, page_index):
     data_set_factory[data_set].save()
-    return render_page(page_index)
+    return render_page(data_set, page_index)
 
 
 @app.route("/get_image/<int:data_set>/<int:image_id>")

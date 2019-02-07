@@ -29,7 +29,7 @@ class DatasetFactory(object):
 
     def get_data_sets(self):
         return [Dataset(os.path.join(self.annotations_dir, filename), self.images_per_page)
-                for filename in os.listdir(self.annotations_dir)
+                for filename in sorted(os.listdir(self.annotations_dir))
                 if filename.endswith("json")]
 
     def save_all(self):
