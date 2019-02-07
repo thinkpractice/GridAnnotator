@@ -102,11 +102,11 @@
         let dropdown = $('#datasetSelect');
 
         dropdown.empty();
-        $.getJSON("/get_datasets", function (data) {
+        $.getJSON("/get_data_sets/{{selected_dataset}}", function (data) {
             $.each(data, function (key, entry) {
                 dropdown.append($('<option></option>').attr('value', `/show/${entry.id}/0`).attr('selected', entry.selected).text(entry.name));
             })
-            dropdown.prop('selectedIndex', 0);
+            //dropdown.prop('selectedIndex', 0);
         });
 
         $.getJSON("/get_class_counts/{{selected_dataset}}", function (data) {
