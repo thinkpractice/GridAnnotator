@@ -88,16 +88,14 @@
             alert("Image ${image_index} clicked at page: ${page_index}");
         }
 
-        function dataSetChange()
-        {
-            $.getJSON("", function (data) {
-
-            });
-        }
-
         $(document).ready(function (e) {
             $('#datasetSelect').on('change', function () {
-                dataSetChange();
+                var url = $(this).val();
+                if (url)
+                {
+                    window.location = url;
+                }
+                return false;
             });
         });
 
@@ -106,7 +104,7 @@
         dropdown.empty();
         $.getJSON("/get_datasets", function (data) {
             $.each(data, function (key, entry) {
-                dropdown.append($('<option></option>').attr('value', entry.id).attr('selected', entry.selected).text(entry.name));
+                dropdown.append($('<option></option>').attr('value', `/show/${entry.id}/0`).attr('selected', entry.selected).text(entry.name));
             })
             dropdown.prop('selectedIndex', 0);
         });
