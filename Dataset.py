@@ -47,9 +47,14 @@ class Dataset(object):
 
     @property
     def class_counts(self):
+        positives = 0
+        for image in self.images:
+            if image["annotation"]:
+                positives += 1
+        negatives = len(self.images) - positives
         return [
-            {"label": "Positives", "count": 10},
-            {"label": "Negatives", "count": 20}
+            {"label": "Positives", "count": positives},
+            {"label": "Negatives", "count": negatives}
         ]
 
     @property

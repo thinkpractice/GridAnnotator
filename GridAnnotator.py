@@ -29,11 +29,12 @@ def render_page(data_set, page_index):
         image["display_width"] = image["width"] * app.config["IMAGE_ZOOM_FACTOR"]
         image["display_height"] = image["height"] * app.config["IMAGE_ZOOM_FACTOR"]
 
+    page_end_index = page_index + 10 if page_index + 10 < dataset.number_of_pages else dataset.number_of_pages
     images = {
         "success": True,
         "images": images_for_page,
         "paging_start_index": page_index,
-        "paging_end_index": page_index + 10,
+        "paging_end_index": page_end_index,
         "previous_page_number": previous_page_number,
         "next_page_number": next_page_number,
         "number_of_pages": dataset.number_of_pages,
