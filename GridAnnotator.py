@@ -37,7 +37,7 @@ def render_page(data_set, page_index):
         "paging_end_index": page_end_index,
         "previous_page_number": previous_page_number,
         "next_page_number": next_page_number,
-        "number_of_pages": dataset.number_of_pages,
+        "number_of_pages": dataset.number_of_pages - 1,
         "selected_dataset": data_set
     }
     return render_template("view.html", **images)
