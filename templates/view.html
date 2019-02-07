@@ -88,13 +88,22 @@
             alert("Image ${image_index} clicked at page: ${page_index}");
         }
 
+        function dataSetChange()
+        {
+            $.getJSON("", function (data) {
+
+            });
+        }
+
+        $(document).ready(function (e) {
+            $('#datasetSelect').on('change', function () {
+                dataSetChange();
+            });
+        });
 
         let dropdown = $('#datasetSelect');
 
         dropdown.empty();
-
-        /*dropdown.append('<option selected="true" disabled>Choose Dataset</option>');*/
-
         $.getJSON("/get_datasets", function (data) {
             $.each(data, function (key, entry) {
                 dropdown.append($('<option></option>').attr('value', entry.id).attr('selected', entry.selected).text(entry.name));
