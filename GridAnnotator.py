@@ -91,5 +91,9 @@ def get_class_counts(data_set):
     return jsonify(data_set_factory[data_set].class_counts)
 
 
+@app.teardown_appcontext
+def teardown_factory(e):
+    data_set_factory.save_all()
+
+
 app.run()
-data_set_factory.save_all()
