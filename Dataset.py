@@ -94,6 +94,7 @@ class Dataset(object):
             page_index = 0
         if page_index >= self.number_of_pages - 1:
             page_index = self.number_of_pages - 1
+        self.current_page_index = page_index
         return self.paginated_images[page_index]
 
     def paginate(self, images, images_per_page):
