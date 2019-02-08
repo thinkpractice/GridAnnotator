@@ -52,7 +52,7 @@ def index():
 def show(data_set_index, page_index):
     data_set = data_set_factory[data_set_index]
     data_set.save()
-    page_index = data_set.current_page_index
+    page_index = page_index if page_index > data_set.current_page_index else data_set.current_page_index
     return render_page(data_set_index, page_index)
 
 
