@@ -52,6 +52,9 @@
             </div>
             <div>
                 <ul class="pagination">
+                {% if paging_start_index > 1: %}
+                    <li class="page-item"><a class="page-link" href="/show/{{selected_dataset}}/0">First</a></li>
+                {% endif %}
                 {% if paging_start_index > 0: %}
                     <li class="page-item"><a class="page-link" href="/show/{{selected_dataset}}/{{previous_page_number}}">Previous</a></li>
                 {% endif %}
@@ -60,6 +63,9 @@
                 {% endfor %}
                 {% if paging_end_index < number_of_pages: %}
                     <li class="page-item"><a class="page-link" href="/show/{{selected_dataset}}/{{next_page_number}}">Next</a></li>
+                {% endif %}
+                {% if paging_start_index < number_of_pages-1: %}
+                    <li class="page-item"><a class="page-link" href="/show/{{selected_dataset}}/{{number_of_pages}}">Last</a></li>
                 {% endif %}
                 </ul>
             </div>
