@@ -45,14 +45,20 @@ def render_page(data_set, page_index):
 
 @app.route("/")
 def index():
+    app.config["CURRENT_DATASET"] = 0
     return render_page(0, data_set_factory[0].current_page_index)
 
 
 @app.route("/show/<int:data_set_index>/<int:page_index>")
 def show(data_set_index, page_index):
+    data_set_changed = data_set_index != app.config["CURRENT_DATASET"]
+
     data_set = data_set_factory[data_set_index]
     data_set.save()
-    page_index = page_index if page_index > data_set.current_page_index else data_set.current_page_index
+
+    page_index = page_index if not data_set_changed else data_set.current_page_index
+    if data_set_changed:
+        app.config["CURRENT_DATASET"] = data_set_index
     return render_page(data_set_index, page_index)
 
 
